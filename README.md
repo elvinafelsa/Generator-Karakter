@@ -1,2 +1,0 @@
-# copywriting-app
-app vina 
