@@ -1,1 +1,348 @@
-<html>coba </html>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Generator Karakter Sederhana</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="description" content="Aplikasi sederhana untuk membuat karakter SVG dengan HTML + Tailwind. Pilih warna, bentuk mata, rambut, dan lainnya, lalu unduh hasilnya." />
+  <style>
+    /* Hindari seleksi teks tak sengaja pada kanvas */
+    .no-select { -webkit-user-select: none; -ms-user-select: none; user-select: none; }
+    /* Smooth shadow */
+    .soft-shadow { box-shadow: 0 10px 25px rgba(0,0,0,0.08); }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+  <div class="min-h-screen max-w-6xl mx-auto p-4 sm:p-8">
+    <!-- Header -->
+    <header class="mb-6 flex items-center justify-between gap-4">
+      <div>
+        <h1 class="text-2xl sm:text-3xl font-bold tracking-tight">Generator Karakter</h1>
+        <p class="text-sm sm:text-base text-slate-600">Bikin avatar SVG lucu dalam hitungan detik. HTML + Tailwind + Vanilla JS.</p>
+      </div>
+      <a href="https://tailwindcss.com" target="_blank" rel="noopener" class="text-xs sm:text-sm text-blue-600 hover:underline">Tailwind Docs ↗</a>
+    </header>
+
+    <!-- Layout Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Panel Kontrol -->
+      <section class="lg:col-span-1 bg-white rounded-2xl soft-shadow p-4 sm:p-6">
+        <h2 class="font-semibold text-lg mb-4">Pengaturan</h2>
+
+        <div class="space-y-5">
+          <!-- Warna Kulit -->
+          <div>
+            <label class="block text-sm font-medium mb-1" for="skin">Warna Kulit</label>
+            <input id="skin" type="color" value="#F5CBA7" class="w-full h-10 rounded-xl border border-slate-200" />
+          </div>
+          <!-- Warna Rambut -->
+          <div>
+            <label class="block text-sm font-medium mb-1" for="hairColor">Warna Rambut</label>
+            <input id="hairColor" type="color" value="#2C3E50" class="w-full h-10 rounded-xl border border-slate-200" />
+          </div>
+          <!-- Warna Baju -->
+          <div>
+            <label class="block text-sm font-medium mb-1" for="shirtColor">Warna Baju</label>
+            <input id="shirtColor" type="color" value="#7FB3D5" class="w-full h-10 rounded-xl border border-slate-200" />
+          </div>
+          <!-- Bentuk Mata -->
+          <div>
+            <label class="block text-sm font-medium mb-1" for="eyes">Bentuk Mata</label>
+            <select id="eyes" class="w-full rounded-xl border border-slate-200 p-2">
+              <option value="round">Bulat</option>
+              <option value="smile">Senang</option>
+              <option value="sleepy">Mengantuk</option>
+              <option value="wink">Kedip</option>
+            </select>
+          </div>
+          <!-- Mulut -->
+          <div>
+            <label class="block text-sm font-medium mb-1" for="mouth">Mulut</label>
+            <select id="mouth" class="w-full rounded-xl border border-slate-200 p-2">
+              <option value="smile">Senyum</option>
+              <option value="open">Terbuka</option>
+              <option value="flat">Datar</option>
+              <option value="surprised">Kaget</option>
+            </select>
+          </div>
+          <!-- Gaya Rambut -->
+          <div>
+            <label class="block text-sm font-medium mb-1" for="hair">Gaya Rambut</label>
+            <select id="hair" class="w-full rounded-xl border border-slate-200 p-2">
+              <option value="short">Pendek</option>
+              <option value="bob">Bob</option>
+              <option value="long">Panjang</option>
+              <option value="buns">Konde</option>
+            </select>
+          </div>
+          <!-- Aksesori -->
+          <div>
+            <label class="block text-sm font-medium mb-1" for="accessory">Aksesori</label>
+            <select id="accessory" class="w-full rounded-xl border border-slate-200 p-2">
+              <option value="none">Tidak ada</option>
+              <option value="glasses">Kacamata</option>
+              <option value="earring">Anting</option>
+              <option value="hat">Topi</option>
+            </select>
+          </div>
+
+          <!-- Tombol Aksi -->
+          <div class="flex flex-wrap gap-2 pt-2">
+            <button id="btnRandom" class="px-4 py-2 rounded-2xl bg-slate-900 text-white text-sm font-medium hover:opacity-90">Acak</button>
+            <button id="btnReset" class="px-4 py-2 rounded-2xl bg-slate-100 text-slate-800 text-sm font-medium border border-slate-200 hover:bg-slate-200">Reset</button>
+            <button id="btnCopy" class="px-4 py-2 rounded-2xl bg-blue-600 text-white text-sm font-medium hover:opacity-90">Salin SVG</button>
+            <button id="btnDownload" class="px-4 py-2 rounded-2xl bg-emerald-600 text-white text-sm font-medium hover:opacity-90">Unduh SVG</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Preview -->
+      <section class="lg:col-span-2">
+        <div class="bg-white rounded-2xl soft-shadow p-4 sm:p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="font-semibold text-lg">Preview</h2>
+            <div class="text-xs text-slate-500">SVG vector — scalable tanpa pecah</div>
+          </div>
+
+          <div class="aspect-square w-full bg-slate-50 border border-slate-100 rounded-2xl grid place-items-center no-select" id="previewWrap">
+            <div id="svgContainer" class="w-[84%] max-w-[400px]"></div>
+          </div>
+
+          <!-- Kode SVG -->
+          <details class="mt-4 bg-slate-900/95 text-slate-50 rounded-xl">
+            <summary class="px-4 py-3 cursor-pointer text-sm font-semibold">Lihat Kode SVG</summary>
+            <pre id="svgCode" class="overflow-auto p-4 text-xs whitespace-pre-wrap"></pre>
+          </details>
+        </div>
+      </section>
+    </div>
+
+    <footer class="mt-8 text-center text-xs text-slate-500">
+      Dibuat dengan ❤️ oleh kamu. Bebas dipakai untuk proyek komersial. 🙌
+    </footer>
+  </div>
+
+  <script>
+    // ===== Utilitas =====
+    const $ = (id) => document.getElementById(id);
+    const randPick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+    const clamp01 = (v) => Math.max(0, Math.min(1, v));
+
+    // ===== Bagian SVG =====
+    function faceBase(skin) {
+      return `
+        <circle cx="100" cy="95" r="60" fill="${skin}" />
+        <rect x="60" y="140" width="80" height="50" rx="24" fill="${skin}" />
+      `;
+    }
+
+    function eyes(type) {
+      if (type === 'smile') {
+        return `
+          <path d="M70 90 q10 10 20 0" stroke="#111827" stroke-width="6" fill="none" stroke-linecap="round" />
+          <path d="M110 90 q10 10 20 0" stroke="#111827" stroke-width="6" fill="none" stroke-linecap="round" />
+        `;
+      }
+      if (type === 'sleepy') {
+        return `
+          <line x1="70" y1="95" x2="90" y2="95" stroke="#111827" stroke-width="6" stroke-linecap="round" />
+          <line x1="110" y1="95" x2="130" y2="95" stroke="#111827" stroke-width="6" stroke-linecap="round" />
+        `;
+      }
+      if (type === 'wink') {
+        return `
+          <circle cx="80" cy="90" r="6" fill="#111827" />
+          <line x1="115" y1="90" x2="135" y2="90" stroke="#111827" stroke-width="6" stroke-linecap="round" />
+        `;
+      }
+      // default round
+      return `
+        <circle cx="80" cy="90" r="6" fill="#111827" />
+        <circle cx="120" cy="90" r="6" fill="#111827" />
+      `;
+    }
+
+    function mouth(type) {
+      if (type === 'open') {
+        return `<ellipse cx="100" cy="120" rx="12" ry="9" fill="#ef4444" />`;
+      }
+      if (type === 'flat') {
+        return `<rect x="88" y="116" width="24" height="4" rx="2" fill="#111827" />`;
+      }
+      if (type === 'surprised') {
+        return `<circle cx="100" cy="120" r="8" fill="#111827" />`;
+      }
+      return `<path d="M84 116 q16 16 32 0" stroke="#111827" stroke-width="5" fill="none" stroke-linecap="round" />`;
+    }
+
+    function hair(style, color) {
+      const c = color;
+      if (style === 'bob') {
+        return `<path d="M48 82 q52 -40 104 0 v32 q-12 28 -52 28 q-40 0 -52 -28z" fill="${c}" />`;
+      }
+      if (style === 'long') {
+        return `<path d="M40 78 q60 -42 120 0 v70 q-20 30 -60 30 q-40 0 -60 -30z" fill="${c}" />`;
+      }
+      if (style === 'buns') {
+        return `
+          <circle cx="60" cy="62" r="16" fill="${c}" />
+          <circle cx="140" cy="62" r="16" fill="${c}" />
+          <path d="M44 80 q56 -40 112 0 v24 q-20 24 -56 24 q-36 0 -56 -24z" fill="${c}" />
+        `;
+      }
+      // short
+      return `<path d="M48 84 q52 -44 104 0 v22 q-12 22 -52 22 q-40 0 -52 -22z" fill="${c}" />`;
+    }
+
+    function accessory(type) {
+      if (type === 'glasses') {
+        return `
+          <circle cx="78" cy="92" r="14" fill="none" stroke="#111827" stroke-width="4" />
+          <circle cx="122" cy="92" r="14" fill="none" stroke="#111827" stroke-width="4" />
+          <rect x="92" y="90" width="16" height="4" rx="2" fill="#111827" />
+        `;
+      }
+      if (type === 'earring') {
+        return `
+          <circle cx="56" cy="124" r="4" fill="#f59e0b" />
+          <circle cx="144" cy="124" r="4" fill="#f59e0b" />
+        `;
+      }
+      if (type === 'hat') {
+        return `
+          <path d="M52 64 q48 -22 96 0 v10 h-96z" fill="#1f2937" />
+          <rect x="66" y="54" width="68" height="12" rx="6" fill="#374151" />
+        `;
+      }
+      return '';
+    }
+
+    function shirt(color) {
+      return `<path d="M58 184 q42 -20 84 0 l12 44 h-108z" fill="${color}" />`;
+    }
+
+    function buildSVG({ skin, eyes: e, mouth: m, hair: h, hairColor, accessory: a, shirtColor }) {
+      return `
+        <svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 200 220" shape-rendering="geometricPrecision">
+          <defs>
+            <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#ffffff" />
+              <stop offset="100%" stop-color="#f1f5f9" />
+            </linearGradient>
+          </defs>
+          <rect x="0" y="0" width="200" height="220" fill="url(#bg)" />
+          <g transform="translate(0,0)">
+            ${hair(h, hairColor)}
+            ${faceBase(skin)}
+            ${eyes(e)}
+            ${mouth(m)}
+            ${accessory(a)}
+            ${shirt(shirtColor)}
+          </g>
+        </svg>
+      `.trim();
+    }
+
+    // ===== State & Render =====
+    const state = {
+      skin: $('#skin').value,
+      hairColor: $('#hairColor').value,
+      shirtColor: $('#shirtColor').value,
+      eyes: $('#eyes').value,
+      mouth: $('#mouth').value,
+      hair: $('#hair').value,
+      accessory: $('#accessory').value,
+    };
+
+    function render() {
+      const svg = buildSVG(state);
+      $('#svgContainer').innerHTML = svg;
+      $('#svgCode').textContent = svg;
+    }
+
+    // ===== Event Binding =====
+    const inputs = ['skin','hairColor','shirtColor','eyes','mouth','hair','accessory'];
+    inputs.forEach(id => {
+      $(id).addEventListener('input', (e) => {
+        state[id] = e.target.value;
+        render();
+      });
+      $(id).addEventListener('change', (e) => {
+        state[id] = e.target.value;
+        render();
+      });
+    });
+
+    // Randomizer
+    function randomHex() {
+      return `#${Math.floor(Math.random()*0xFFFFFF).toString(16).padStart(6,'0')}`;
+    }
+
+    $('#btnRandom').addEventListener('click', () => {
+      state.skin = randomHex(); $('#skin').value = state.skin;
+      state.hairColor = randomHex(); $('#hairColor').value = state.hairColor;
+      state.shirtColor = randomHex(); $('#shirtColor').value = state.shirtColor;
+      state.eyes = randPick(['round','smile','sleepy','wink']); $('#eyes').value = state.eyes;
+      state.mouth = randPick(['smile','open','flat','surprised']); $('#mouth').value = state.mouth;
+      state.hair = randPick(['short','bob','long','buns']); $('#hair').value = state.hair;
+      state.accessory = randPick(['none','glasses','earring','hat']); $('#accessory').value = state.accessory;
+      render();
+    });
+
+    // Reset
+    $('#btnReset').addEventListener('click', () => {
+      $('#skin').value = '#F5CBA7';
+      $('#hairColor').value = '#2C3E50';
+      $('#shirtColor').value = '#7FB3D5';
+      $('#eyes').value = 'round';
+      $('#mouth').value = 'smile';
+      $('#hair').value = 'short';
+      $('#accessory').value = 'none';
+      state.skin = '#F5CBA7';
+      state.hairColor = '#2C3E50';
+      state.shirtColor = '#7FB3D5';
+      state.eyes = 'round';
+      state.mouth = 'smile';
+      state.hair = 'short';
+      state.accessory = 'none';
+      render();
+    });
+
+    // Copy SVG
+    $('#btnCopy').addEventListener('click', async () => {
+      const svg = $('#svgCode').textContent;
+      try {
+        await navigator.clipboard.writeText(svg);
+        toast('SVG berhasil disalin!');
+      } catch (e) {
+        toast('Gagal menyalin. Coba manual.');
+      }
+    });
+
+    // Download SVG
+    $('#btnDownload').addEventListener('click', () => {
+      const svg = $('#svgCode').textContent;
+      const blob = new Blob([svg], { type: 'image/svg+xml' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'karakter.svg'; a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    // Mini toast
+    function toast(msg) {
+      const t = document.createElement('div');
+      t.textContent = msg;
+      t.className = 'fixed bottom-4 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-sm px-4 py-2 rounded-full shadow-lg';
+      document.body.appendChild(t);
+      setTimeout(() => t.remove(), 1800);
+    }
+
+    // Render awal
+    render();
+  </script>
+</body>
+</html>
+
