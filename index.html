@@ -3,333 +3,39 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Generator Prompt AI — Karakter</title>
+  <title>Generator Prompt AI Karakter</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <meta name="description" content="Aplikasi sederhana untuk membuat prompt AI karakter (Midjourney, Stable Diffusion, DALL·E). Pilih gaya, pose, mood, pencahayaan, warna, lalu salin prompt siap pakai." />
-  <style>
-    .soft { box-shadow: 0 10px 30px rgba(2, 6, 23, 0.08); }
-    .kbd { @apply inline-flex items-center justify-center rounded-md border border-slate-300 bg-slate-50 px-1.5 text-xs font-medium text-slate-700; }
-  </style>
 </head>
-<body class="bg-slate-50 text-slate-800">
-  <div class="max-w-7xl mx-auto p-4 sm:p-8">
-    <header class="mb-6 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
-      <div>
-        <h1 class="text-2xl sm:text-3xl font-bold tracking-tight">Generator Prompt AI — Karakter</h1>
-        <p class="text-slate-600 text-sm">Racik prompt estetik untuk model gambar (Midjourney / SDXL / DALL·E). Klik, kombinasikan, salin.</p>
-      </div>
-      <div class="flex gap-2 text-xs text-slate-500">
-        <span class="hidden sm:inline">Tips: tekan</span>
-        <span class="kbd">Alt</span><span>+</span><span class="kbd">R</span><span> untuk acak</span>
-      </div>
-    </header>
-
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <!-- Panel Kiri: Opsi Utama -->
-      <section class="lg:col-span-1 bg-white rounded-2xl soft p-4 sm:p-6">
-        <h2 class="font-semibold text-lg mb-4">Detail Karakter</h2>
-        <div class="space-y-5">
-          <div>
-            <label class="block text-sm font-medium mb-1" for="role">Peran/Profesi</label>
-            <input id="role" type="text" placeholder="contoh: hacker futuristik, barista ramah, ksatria elf" class="w-full rounded-xl border border-slate-200 p-2" />
-          </div>
-          <div>
-            <label class="block text-sm font-medium mb-1" for="gender">Tipe Karakter</label>
-            <select id="gender" class="w-full rounded-xl border border-slate-200 p-2">
-              <option value="">Tidak spesifik</option>
-              <option>Anak</option>
-              <option>Remaja</option>
-              <option>Dewasa</option>
-              <option>Lansia</option>
-              <option>Robot/Android</option>
-              <option>Makhluk Fantasi</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-sm font-medium mb-1" for="style">Gaya Visual</label>
-            <select id="style" class="w-full rounded-xl border border-slate-200 p-2">
-              <option value="3D pixar style">3D Pixar style</option>
-              <option value="anime cinematic">Anime cinematic</option>
-              <option value="semi-realistic portrait">Semi‑realistic portrait</option>
-              <option value="flat vector illustration">Flat vector illustration</option>
-              <option value="isometric art">Isometric art</option>
-              <option value="hand‑drawn watercolor">Hand‑drawn watercolor</option>
-              <option value="ghibli‑inspired">Ghibli‑inspired</option>
-              <option value="chibi">Chibi</option>
-              <option value="pixel art">Pixel art</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-sm font-medium mb-1" for="camera">Framing/Kamera</label>
-            <select id="camera" class="w-full rounded-xl border border-slate-200 p-2">
-              <option value="">Auto</option>
-              <option>close‑up portrait</option>
-              <option>half body</option>
-              <option>full body</option>
-              <option>dynamic angle, low‑angle</option>
-              <option>dynamic angle, high‑angle</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-sm font-medium mb-1" for="pose">Pose/Gerakan</label>
-            <input id="pose" type="text" placeholder="contoh: melambaikan tangan, berlari, menatap kamera" class="w-full rounded-xl border border-slate-200 p-2" />
-          </div>
-          <div>
-            <label class="block text-sm font-medium mb-1" for="expression">Ekspresi</label>
-            <select id="expression" class="w-full rounded-xl border border-slate-200 p-2">
-              <option>senyum hangat</option>
-              <option>serius fokus</option>
-              <option>terkejut</option>
-              <option>bahagia</option>
-              <option>murung</option>
-              <option>percaya diri</option>
-            </select>
-          </div>
-        </div>
-      </section>
-
-      <!-- Panel Tengah: Gaya & Suasana -->
-      <section class="lg:col-span-1 bg-white rounded-2xl soft p-4 sm:p-6">
-        <h2 class="font-semibold text-lg mb-4">Gaya & Suasana</h2>
-        <div class="space-y-5">
-          <div>
-            <label class="block text-sm font-medium mb-1" for="mood">Mood</label>
-            <select id="mood" class="w-full rounded-xl border border-slate-200 p-2">
-              <option>cozy & wholesome</option>
-              <option>heroic & epic</option>
-              <option>mysterious & moody</option>
-              <option>playful & bright</option>
-              <option>calm & minimal</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-sm font-medium mb-1" for="lighting">Pencahayaan</label>
-            <select id="lighting" class="w-full rounded-xl border border-slate-200 p-2">
-              <option>soft studio lighting</option>
-              <option>golden hour lighting</option>
-              <option>dramatic rim light</option>
-              <option>neon cyberpunk lighting</option>
-              <option>volumetric light</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-sm font-medium mb-1" for="palette">Palet Warna</label>
-            <select id="palette" class="w-full rounded-xl border border-slate-200 p-2">
-              <option>pastel palette</option>
-              <option>bold saturated colors</option>
-              <option>monochrome blue</option>
-              <option>earthy tones</option>
-              <option>black & white</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-sm font-medium mb-1" for="background">Latar/Setting</label>
-            <input id="background" type="text" placeholder="contoh: kafe minimalis, kota futuristik neon, hutan magis" class="w-full rounded-xl border border-slate-200 p-2" />
-          </div>
-          <div>
-            <label class="block text-sm font-medium mb-1" for="outfit">Pakaian/Properti</label>
-            <input id="outfit" type="text" placeholder="contoh: hoodie hitam, kacamata bulat, sarung tangan taktis" class="w-full rounded-xl border border-slate-200 p-2" />
-          </div>
-        </div>
-      </section>
-
-      <!-- Panel Kanan: Kualitas & Model -->
-      <section class="lg:col-span-1 bg-white rounded-2xl soft p-4 sm:p-6">
-        <h2 class="font-semibold text-lg mb-4">Output & Format</h2>
-        <div class="space-y-5">
-          <div>
-            <label class="block text-sm font-medium mb-1" for="model">Target Model</label>
-            <select id="model" class="w-full rounded-xl border border-slate-200 p-2">
-              <option value="generic">Generic (semua model)</option>
-              <option value="midjourney">Midjourney</option>
-              <option value="sdxl">Stable Diffusion / SDXL</option>
-              <option value="dalle">DALL·E</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-sm font-medium mb-1" for="quality">Tag Kualitas</label>
-            <select id="quality" class="w-full rounded-xl border border-slate-200 p-2">
-              <option>highly detailed, cinematic</option>
-              <option>clean lines, minimal</option>
-              <option>illustrative, textured, artisan</option>
-              <option>game art, AAA quality</option>
-              <option>soft, dreamy bokeh</option>
-            </select>
-          </div>
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label class="block text-sm font-medium mb-1" for="ar">Aspect Ratio</label>
-              <select id="ar" class="w-full rounded-xl border border-slate-200 p-2">
-                <option>1:1</option>
-                <option>2:3</option>
-                <option>3:2</option>
-                <option>16:9</option>
-                <option>9:16</option>
-                <option>4:5</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-sm font-medium mb-1" for="seed">Seed (opsional)</label>
-              <input id="seed" type="number" placeholder="acak" class="w-full rounded-xl border border-slate-200 p-2" />
-            </div>
-          </div>
-          <div>
-            <label class="block text-sm font-medium mb-1" for="negative">Negative Prompt (opsional)</label>
-            <input id="negative" type="text" placeholder="contoh: blurry, low quality, watermark, extra fingers" class="w-full rounded-xl border border-slate-200 p-2" />
-          </div>
-
-          <div class="flex flex-wrap gap-2 pt-2">
-            <button id="btnRandom" class="px-4 py-2 rounded-2xl bg-slate-900 text-white text-sm font-medium hover:opacity-90">Acak</button>
-            <button id="btnReset" class="px-4 py-2 rounded-2xl bg-slate-100 text-slate-800 text-sm font-medium border border-slate-200 hover:bg-slate-200">Reset</button>
-            <button id="btnCopy" class="px-4 py-2 rounded-2xl bg-blue-600 text-white text-sm font-medium hover:opacity-90">Salin Prompt</button>
-            <button id="btnDownload" class="px-4 py-2 rounded-2xl bg-emerald-600 text-white text-sm font-medium hover:opacity-90">Unduh .txt</button>
-          </div>
-        </div>
-      </section>
+<body class="bg-gray-100 text-gray-800">
+  <div class="min-h-screen flex flex-col items-center justify-center p-6">
+    <h1 class="text-2xl font-bold mb-4">Generator Prompt AI Karakter</h1>
+    <div class="bg-white rounded-xl shadow-md p-6 w-full max-w-lg">
+      <label class="block mb-2 font-medium">Nama Karakter</label>
+      <input id="nama" type="text" placeholder="Contoh: Vina" class="w-full p-2 border rounded mb-4" />
+      <label class="block mb-2 font-medium">Deskripsi Karakter</label>
+      <textarea id="deskripsi" rows="3" placeholder="Contoh: Seorang wanita digital marketer dengan rambut panjang, memakai kacamata..." class="w-full p-2 border rounded mb-4"></textarea>
+      <label class="block mb-2 font-medium">Gaya / Style</label>
+      <select id="style" class="w-full p-2 border rounded mb-4">
+        <option value="pixar">Pixar 3D</option>
+        <option value="anime">Anime</option>
+        <option value="realistic">Realistic</option>
+        <option value="cartoon">Cartoon</option>
+      </select>
+      <button id="generate" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Generate Prompt</button>
+      <h2 class="mt-4 font-semibold">Hasil Prompt:</h2>
+      <textarea id="hasil" class="w-full p-2 border rounded mt-2" rows="4" readonly></textarea>
     </div>
-
-    <!-- Prompt Output -->
-    <section class="mt-6 bg-white rounded-2xl soft p-4 sm:p-6">
-      <div class="flex items-center justify-between mb-3">
-        <h2 class="font-semibold text-lg">Hasil Prompt</h2>
-        <div id="meta" class="text-xs text-slate-500"></div>
-      </div>
-      <textarea id="result" rows="7" class="w-full rounded-xl border border-slate-200 p-3 font-mono text-sm" placeholder="Prompt akan muncul di sini…"></textarea>
-      <details class="mt-3 text-sm text-slate-600">
-        <summary class="cursor-pointer font-semibold">Contoh Output per Model</summary>
-        <div class="mt-2 grid sm:grid-cols-3 gap-4">
-          <div class="p-3 rounded-xl bg-slate-50 border border-slate-200">
-            <div class="font-medium mb-1">Generic</div>
-            <code class="text-xs">[deskripsi], [gaya], [kamera], [mood], [pencahayaan], [palet], [latar], [outfit], [kualitas]. Negative: [negatif]</code>
-          </div>
-          <div class="p-3 rounded-xl bg-slate-50 border border-slate-200">
-            <div class="font-medium mb-1">Midjourney</div>
-            <code class="text-xs">[deskripsi] — [gaya], [kamera], [mood], [pencahayaan], [palet], [latar], [outfit], [kualitas] --ar 2:3 --seed 123 --stylize 200</code>
-          </div>
-          <div class="p-3 rounded-xl bg-slate-50 border border-slate-200">
-            <div class="font-medium mb-1">SDXL</div>
-            <code class="text-xs">masterpiece, best quality, [gaya], [kamera], [deskripsi], [mood], [pencahayaan], [palet], [latar], [outfit] \nNegative: [negatif] \nCFG: 7, Steps: 30, Sampler: DPM++</code>
-          </div>
-        </div>
-      </details>
-    </section>
-
-    <footer class="mt-8 text-center text-xs text-slate-500">Dibuat dengan ❤️. Bebas dipakai untuk proyek komersial.</footer>
   </div>
-
   <script>
-    const $ = (id) => document.getElementById(id);
-
-    const presets = {
-      role: ["desainer UI futuristik","petualang steampunk","penyihir muda","barista ramah","hacker cyberpunk","ksatria elf","robot pendamping"],
-      camera: ["close‑up portrait","half body","full body","dynamic angle, low‑angle","dynamic angle, high‑angle"],
-      pose: ["melambaikan tangan","berlari kecil","membaca buku","mengetik di laptop","menatap kamera","mengangkat alis"],
-      expression: ["senyum hangat","serius fokus","terkejut","bahagia","murung","percaya diri"],
-      mood: ["cozy & wholesome","heroic & epic","mysterious & moody","playful & bright","calm & minimal"],
-      lighting: ["soft studio lighting","golden hour lighting","dramatic rim light","neon cyberpunk lighting","volumetric light"],
-      palette: ["pastel palette","bold saturated colors","monochrome blue","earthy tones","black & white"],
-      background: ["kafe minimalis","kota futuristik neon","hutan magis berkabut","studio putih bersih","perpustakaan modern"],
-      outfit: ["hoodie hitam, kacamata bulat","jaket kulit, sarung tangan taktis","gaun minimalis, kalung tipis","baju zirah ringan, jubah biru","seragam barista, apron hijau"],
-      quality: ["highly detailed, cinematic","clean lines, minimal","illustrative, textured, artisan","game art, AAA quality","soft, dreamy bokeh"],
-      style: ["3D pixar style","anime cinematic","semi‑realistic portrait","flat vector illustration","isometric art","hand‑drawn watercolor","ghibli‑inspired","chibi","pixel art"],
-    };
-
-    function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
-
-    function buildPrompt(){
-      const role = $('#role').value.trim();
-      const type = $('#gender').value;
-      const style = $('#style').value;
-      const camera = $('#camera').value;
-      const pose = $('#pose').value.trim();
-      const expression = $('#expression').value;
-      const mood = $('#mood').value;
-      const lighting = $('#lighting').value;
-      const palette = $('#palette').value;
-      const background = $('#background').value.trim();
-      const outfit = $('#outfit').value.trim();
-      const quality = $('#quality').value;
-      const ar = $('#ar').value;
-      const seed = $('#seed').value;
-      const negative = $('#negative').value.trim();
-      const model = $('#model').value;
-
-      const core = [
-        role || 'karakter orisinal',
-        type || '',
-        expression,
-        pose || '',
-      ].filter(Boolean).join(', ');
-
-      const styleBlock = [style, camera || '', mood, lighting, palette, background ? `background: ${background}` : '', outfit ? `outfit: ${outfit}` : '', quality].filter(Boolean).join(', ');
-
-      let result = '';
-      if(model === 'midjourney'){
-        result = `${core} — ${styleBlock} --ar ${ar.replace(':','\u003A')}${seed?` --seed ${seed}`:''} --stylize 200`;
-        if(negative) result += `\n--no ${negative}`;
-      } else if(model === 'sdxl'){
-        result = `masterpiece, best quality, ${styleBlock}, ${core}`;
-        if(negative) result += `\nNegative
+    document.getElementById('generate').addEventListener('click', () => {
+      const nama = document.getElementById('nama').value.trim();
+      const desk = document.getElementById('deskripsi').value.trim();
+      const style = document.getElementById('style').value;
+      const prompt = `Buat gambar karakter ${nama}, ${desk}, dengan gaya ${style}, lighting cinematic, kualitas tinggi, sangat detail.`;
+      document.getElementById('hasil').value = prompt;
+    });
+  </script>
+</body>
+</html>
 
 
-        <meta charset="UTF-8">
-<textarea id="promptOutput" class="w-full h-40 border p-2 rounded mb-4" placeholder="Hasil prompt akan muncul di sini..."></textarea>
-<div class="flex flex-wrap gap-2 justify-center mb-4">
-<button id="randomBtn" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Acak</button>
-<button id="generateBtn" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Generate Prompt</button>
-<button id="copyBtn" class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">Salin</button>
-<button id="downloadBtn" class="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600">Unduh</button>
-<button id="resetBtn" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Reset</button>
-</div>
-</div>
-
-
-<script>
-function generatePrompt() {
-const styles = ["Pixar 3D", "Anime", "Chibi", "Realistic", "Cartoon"];
-const poses = ["duduk", "berlari", "melompat", "mengajar", "mendengarkan"];
-const moods = ["ceria", "serius", "misterius", "bahagia", "lelah"];
-const randomStyle = styles[Math.floor(Math.random() * styles.length)];
-const randomPose = poses[Math.floor(Math.random() * poses.length)];
-const randomMood = moods[Math.floor(Math.random() * moods.length)];
-return `Karakter gaya ${randomStyle}, pose ${randomPose}, mood ${randomMood}`;
-}
-
-
-document.getElementById('randomBtn').addEventListener('click', () => {
-const prompt = generatePrompt();
-document.getElementById('promptOutput').value = prompt;
-console.log('Acak prompt:', prompt);
-});
-
-
-document.getElementById('generateBtn').addEventListener('click', () => {
-const prompt = generatePrompt();
-document.getElementById('promptOutput').value = prompt;
-console.log('Generate prompt:', prompt);
-});
-
-
-document.getElementById('copyBtn').addEventListener('click', () => {
-const output = document.getElementById('promptOutput');
-output.select();
-document.execCommand('copy');
-console.log('Prompt disalin ke clipboard');
-});
-
-
-document.getElementById('downloadBtn').addEventListener('click', () => {
-const blob = new Blob([document.getElementById('promptOutput').value], { type: 'text/plain' });
-const a = document.createElement('a');
-a.href = URL.createObjectURL(blob);
-a.download = 'prompt.txt';
-a.click();
-console.log('Prompt diunduh');
-});
-
-
-document.getElementById('resetBtn').addEventListener('click', () => {
-document.getElementById('promptOutput').value = '';
-console.log('Prompt direset');
-});
-</script>
